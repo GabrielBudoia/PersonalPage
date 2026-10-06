@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Payment status — Your Name</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<main class="result-page container">
+    <div class="result-card">
+
+      <span class="result-icon" aria-hidden="true">
+        <i th:if="${payment.status() == 'PAID'}" class="bi bi-check-lg"></i>
+        <i th:if="${payment.status() == 'PENDING'}" class="bi bi-hourglass-split"></i>
+      </span>
+
+        <span class="test-badge">TEST MODE</span>
+
+        <h1 class="result-title" th:if="${payment.status() == 'PAID'}">
+            Payment received<span class="mint">.</span>
+        </h1>
+        <h1 class="result-title" th:if="${payment.status() == 'PENDING'}">
+            Payment pending<span class="mint">.</span>
+        </h1>
+
+        <p class="result-text" th:if="${payment.status() == 'PAID'}">
+            Stripe confirmed your test payment, and the webhook already updated
+            the status in the database to <code>PAID</code>.
+        </p>
+        <p class="result-text" th:if="${payment.status() == 'PENDING'}">
+            Stripe accepted your test payment, but the final confirmation still
+            hasn't arrived through the <strong>webhook</strong>. Refresh this
+            page in a few seconds.
+        </p>
+
+        <p class="result-note">
+            <span th:text="${payment.amountCents() / 100.0}"></span>
+            <span th:text="${#strings.toUpperCase(payment.currency())}"></span>
+            · No real money was charged.
+        </p>
+
+        <div class="result-buttons">
+            <a th:href="@{/}" class="btn btn-primary">Back to the site</a>
+            <a th:href="@{/#demo}" class="btn btn-ghost">See how it works</a>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

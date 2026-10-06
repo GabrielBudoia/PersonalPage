@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Name — Java Developer</title>
+
+    <!-- Fonts from the design -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Icons (GitHub, LinkedIn, email) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="header container">
+
+    <!-- Mobile only: opens/closes the nav (see static/js/main.js) -->
+    <button type="button" class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+    </button>
+
+    <nav class="nav" id="nav">
+        <a href="#about">About</a>
+        <a href="#demo">Payment demo</a>
+        <a href="#contact">Contact</a>
+        <a th:href="@{/docs/resume.pdf}" class="btn btn-ghost">Full résumé ↗</a>
+    </nav>
+</header>
+
+<main id="top">
+
+    <!-- ========== HERO ========== -->
+    <section class="hero container">
+        <div class="photo-wrap">
+            <div class="photo-ring"></div>
+            <div class="photo-circle"></div>
+            <img th:src="@{/img/foto-perfil.png}" alt="Photo of Your Name" class="photo">
+        </div>
+
+        <div class="hero-text">
+            <span class="badge"><span class="badge-dot"></span>Open to opportunities</span>
+
+            <h1 class="hero-title">
+                Hi, I'm<br>
+                <span class="blue">Your Name</span><span class="mint">.</span>
+            </h1>
+
+            <p class="hero-sub">
+                Java developer working with Spring Boot. I like to build REST APIs with Spring Boot that turn real-world problems into clean, secure and well-structured backend services.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#demo" class="btn btn-primary">See the payment demo ↓</a>
+                <a href="#contact" class="btn btn-ghost">Get in touch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ABOUT ========== -->
+    <section id="about" class="about container">
+
+        <p class="about-statement">
+            I like turning business rules into <span class="blue">systems that work</span>
+            — and understanding every step, from the database to the <span class="mint">“pay” button</span>.
+        </p>
+
+        <p class="about-text">
+            I started programming at 16, and today I'm focused on becoming a specialist backend developer with Spring Boot. I'm also learning AWS to deploy and run my applications in the cloud. I'm always learning, and I know exactly where I want my career to go
+        </p>
+    </section>
+
+    <!-- ========== DEMO ========== -->
+    <section id="demo" class="demo container">
+
+        <h2 class="demo-title">
+            A <span class="violet">test</span> checkout,<br>built from scratch.
+        </h2>
+
+        <div class="demo-info">
+            <p class="demo-text">
+                I built a complete payment flow in a sandbox environment with Spring Boot: order creation,
+                a Stripe charge in test mode, confirmation via webhook and a status update.
+                No real money is charged.
+            </p>
+
+            <ol class="steps">
+                <li class="step">
+                    <span class="step-num blue">01</span>
+                    <div>
+                        <span class="step-name">Order created</span>
+                        <code class="step-route">POST /payments/checkout</code>
+                    </div>
+                </li>
+                <li class="step">
+                    <span class="step-num violet">02</span>
+                    <div>
+                        <span class="step-name">Sandbox charge</span>
+                        <code class="step-route">Stripe Checkout (test mode)</code>
+                    </div>
+                </li>
+                <li class="step">
+                    <span class="step-num mint">03</span>
+                    <div>
+                        <span class="step-name">Webhook confirms</span>
+                        <code class="step-route">POST /webhooks/stripe</code>
+                    </div>
+                </li>
+                <li class="step">
+                    <span class="step-num amber">04</span>
+                    <div>
+                        <span class="step-name">Status updated on screen</span>
+                        <code class="step-route">GET /payments/success</code>
+                    </div>
+                </li>
+            </ol>
+
+            <a href="#" class="link-underline">View the code on GitHub ↗</a>
+        </div>
+
+        <div class="checkout">
+            <div class="checkout-header">
+                <span class="checkout-title">Checkout</span>
+                <span class="test-badge">TEST MODE</span>
+            </div>
+
+            <div class="checkout-product">
+                <div>
+                    <span class="product-name">[Demo product]</span>
+                    <span class="product-type">One-time payment</span>
+                </div>
+                <span class="product-price">€49.90</span>
+            </div>
+
+            <div class="test-card">
+                <span>Use Stripe's test card:</span>
+                <code>4242 4242 4242 4242</code>
+                <span>Any future expiry date and any CVC.</span>
+            </div>
+
+
+            <form th:action="@{/payments/checkout}" method="post">
+                <button type="submit" class="btn-pay">Pay €49.90 (test)</button>
+            </form>
+
+            <span class="checkout-note">Sandbox environment — no real charge is made.</span>
+        </div>
+    </section>
+
+</main>
+
+<!-- ========== CONTACT ========== -->
+<footer id="contact" class="contact">
+    <div class="contact-content">
+        <div class="contact-left">
+            <h2 class="contact-title">Let's<br>talk<span class="mint">.</span></h2>
+        </div>
+
+        <div class="contact-right">
+            <a href="mailto:gabbudoia@gmail.com?subject=Contact%20from%20your%20website" class="contact-email">
+                <i class="bi bi-envelope" aria-hidden="true"></i>
+                gabbudoia@gmail.com
+            </a>
+            <div class="contact-links">
+                <a href="https://www.linkedin.com/in/gabrielbud/" class="btn btn-soft" target="_blank" rel="noopener">
+                    <i class="bi bi-linkedin" aria-hidden="true"></i> LinkedIn
+                </a>
+                <a href="https://github.com/GabrielBudoia" class="btn btn-soft" target="_blank" rel="noopener">
+                    <i class="bi bi-github" aria-hidden="true"></i> GitHub
+                </a>
+                <a th:href="@{/docs/resume.pdf}" class="btn btn-light" target="_blank">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i> Full résumé
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <span class="footer-note">Built with Spring Boot + Thymeleaf · © 2026 Gabriel Budoia</span>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

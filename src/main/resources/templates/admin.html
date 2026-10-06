@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin — Payments</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<main class="admin container">
+
+    <header class="admin-header">
+        <div>
+            <span class="section-label">Admin</span>
+            <h1 class="admin-title">Payments<span class="mint">.</span></h1>
+        </div>
+        <div class="admin-actions">
+            <span class="test-badge">TEST MODE</span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-ghost btn-sm">Log out</button>
+            </form>
+        </div>
+    </header>
+
+    <!-- Totals -->
+    <section class="admin-cards">
+        <article class="admin-card">
+            <span class="admin-card-label">Checkouts created</span>
+            <strong class="admin-card-value" th:text="${dashboard.totalCount()}">0</strong>
+        </article>
+        <article class="admin-card">
+            <span class="admin-card-label">Paid</span>
+            <strong class="admin-card-value" th:text="${dashboard.paidCount()}">0</strong>
+        </article>
+        <article class="admin-card">
+            <span class="admin-card-label">Revenue (test)</span>
+            <strong class="admin-card-value"
+                    th:text="${#numbers.formatDecimal(dashboard.paidCents() / 100.0, 1, 2)} + ' €'">0.00 €</strong>
+        </article>
+        <article class="admin-card">
+            <span class="admin-card-label">Conversion</span>
+            <strong class="admin-card-value"
+                    th:text="${#numbers.formatPercent(dashboard.conversionRate(), 1, 1)}">0%</strong>
+        </article>
+    </section>
+
+    <section class="admin-grid">
+        <!-- By status -->
+        <div class="admin-panel">
+            <h2>By status</h2>
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead>
+                    <tr><th>Status</th><th class="num">Count</th><th class="num">Amount</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s : ${dashboard.byStatus()}">
+                        <td><span class="status-pill"
+                                  th:classappend="${'status-' + #strings.toLowerCase(s.status().name())}"
+                                  th:text="${s.status()}">PAID</span></td>
+                        <td class="num" th:text="${s.count()}">0</td>
+                        <td class="num" th:text="${#numbers.formatDecimal(s.totalCents() / 100.0, 1, 2)} + ' €'">0.00 €</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- By day -->
+        <div class="admin-panel">
+            <h2>Last 30 days</h2>
+            <div class="table-wrap">
+                <table class="admin-table">
+                    <thead>
+                    <tr><th>Day</th><th class="num">Created</th><th class="num">Paid</th><th class="num">Revenue</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="d : ${dashboard.byDay()}">
+                        <td class="mono" th:text="${d.day}">2026-10-06</td>
+                        <td class="num" th:text="${d.created}">0</td>
+                        <td class="num" th:text="${d.paid}">0</td>
+                        <td class="num" th:text="${#numbers.formatDecimal(d.paidCents / 100.0, 1, 2)} + ' €'">0.00 €</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(dashboard.byDay())}">
+                        <td colspan="4" class="admin-empty">No payments in the last 30 days.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest payments -->
+    <section class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>Latest payments</h2>
+            <form class="admin-filter" th:action="@{/admin}" method="get">
+                <select name="status" aria-label="Filter by status" onchange="this.form.submit()">
+                    <option value="">All statuses</option>
+                    <option th:each="st : ${statuses}"
+                            th:value="${st}" th:text="${st}"
+                            th:selected="${st == selectedStatus}">PAID</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>#</th><th>Stripe session</th><th>Status</th>
+                    <th class="num">Amount</th><th>Created</th><th>Paid</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${dashboard.recent()}">
+                    <td class="mono" th:text="${p.id()}">1</td>
+                    <td class="mono" th:title="${p.stripeSessionId()}"
+                        th:text="${#strings.abbreviate(p.stripeSessionId(), 24)}">cs_test_...</td>
+                    <td><span class="status-pill"
+                              th:classappend="${'status-' + #strings.toLowerCase(p.status())}"
+                              th:text="${p.status()}">PAID</span></td>
+                    <td class="num" th:text="${#numbers.formatDecimal(p.amountCents() / 100.0, 1, 2)} + ' ' + ${#strings.toUpperCase(p.currency())}">49.90 EUR</td>
+                    <td th:text="${#temporals.format(p.createdAt(), 'dd/MM/yyyy HH:mm')}">06/10/2026 16:40</td>
+                    <td th:text="${p.paidAt() != null ? #temporals.format(p.paidAt(), 'dd/MM HH:mm') : '—'}">—</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(dashboard.recent())}">
+                    <td colspan="6" class="admin-empty">No payments with this status.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>
