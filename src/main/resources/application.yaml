@@ -22,3 +22,5 @@ app:
 admin:
   username: ${ADMIN_USERNAME:admin}
   password: ${ADMIN_PASSWORD}
+server:
+  forward-headers-strategy: native   # trust X-Forwarded-* from the reverse proxy (Caddy)

@@ -40,6 +40,7 @@ Thumbs.db
 ### Secrets — never commit these ###
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 application-local.yaml
